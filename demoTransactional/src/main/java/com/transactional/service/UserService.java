@@ -58,7 +58,8 @@ public class UserService {
     }
 
     /**
-     * 事物嵌套
+     * 事物嵌套:userServiceC.insert抛出异常，userDao.insert(user)和userServiceB.insert(user)会回滚。
+     * 这里的所有事物传播属性都是PROPAGATION_REQUIRED
      * @param user
      * @return
      */
@@ -66,13 +67,33 @@ public class UserService {
     public int insert3(User user){
         int i = 0;
         int j = 0;
-        int x = userDao.insert(user);
+        int x = 0;
         try {
             x = userDao.insert(user);
             i = userServiceB.insert(user);
             j = userServiceC.insert(user);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException();
+        }
+        return i+j;
+    }
+
+    /**
+     * 事物嵌套:userServiceC.insertNew事物属性为REQUIRES_NEW，userServiceB.insertNew事物抛出异常后，userServiceC.insertNew事物不会回滚
+     * @param user
+     * @return
+     */
+    @Transactional
+    public int insert4(User user){
+        int i = 0;
+        int j = 0;
+        int x = 0;
+        try {
+            x = userDao.insert(user);
+            j = userServiceC.insertNew(user);
+            i = userServiceB.insertNew(user);
+        } catch (Exception e) {
+            throw new RuntimeException();
         }
         return i+j;
     }

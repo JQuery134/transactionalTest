@@ -17,4 +17,15 @@ public class UserServiceB {
         return i;
     }
 
+    @Transactional
+    public int insertNew(User user) throws RuntimeException{
+        int i = userDao.insert(user);
+        try {
+            int x = 1/0;
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+        return i;
+    }
+
 }

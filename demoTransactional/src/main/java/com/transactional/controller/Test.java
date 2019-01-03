@@ -17,6 +17,6 @@ public class Test {
         user.setUserName("包华杰");
         user.setPassword("123");
         user.setPhone("234124");
-        return userService.insert3(user);
+        return userService.insert4(user);
     }
 }
